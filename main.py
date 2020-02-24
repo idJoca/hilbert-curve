@@ -2,6 +2,7 @@ import pygame
 from numpy import interp, asfarray
 from utils import Point2D, Step, Path, Trace
 from PIL import Image
+from sys import argv
 
 
 class Main():
@@ -47,7 +48,8 @@ class Main():
     def loadImage(self, image_path, save_name):
         image = Image.open(image_path).resize((self.width, self.height))
         self._image_pixels_color_array = asfarray(image)
-        self.save_name = save_name
+        self.save_name = "{}_hilbert_{}_{}x{}.png".format(
+            save_name, self.order, self.width, self.height)
         self._load_image_flag = True
 
     def draw_line(self, _from: Point2D, to: Point2D):
@@ -60,7 +62,7 @@ class Main():
             self.color = tuple(
                 self._image_pixels_color_array[int(to.y)][int(to.x)])
         pygame.draw.line(
-            self.canvas, self.color, _from.to_tuple(), to.to_tuple(), 4)
+            self.canvas, self.color, _from.to_tuple(), to.to_tuple(), 2)
         self.count += 1
 
     def draw_shape(self, previous, first, second, third, fourth):
@@ -224,6 +226,7 @@ class Main():
                                                           pygame.RESIZABLE)
 
 
-main = Main(1024, 1024, 7, 100, 0)
-main.loadImage('fav.png', 'fav.png')
-main.loop()
+if __name__ == "__main__":
+    main = Main(1024, 1024, 9, 100, 0)
+    main.loadImage(argv[1], argv[2])
+    main.loop()
